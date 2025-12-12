@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Culinary Canvas | Place Order</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Poppins,sans-serif;
+  background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+  url("https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1500&q=80")
+  center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+.card{
+  background:#ffffffee;
+  width:560px;
+  padding:30px;
+  border-radius:22px;
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+}
+h1{text-align:center;color:#b13e2f}
+.subtitle{text-align:center;font-size:14px;color:#555;margin-bottom:18px}
+label{font-weight:600;margin-top:14px;display:block}
+input,textarea{
+  width:100%;padding:10px;margin-top:6px;
+  border-radius:8px;border:1px solid #ccc
+}
+textarea{height:60px}
+details{
+  margin-top:10px;border-radius:10px;
+  background:#fafafa;border:1px solid #ddd
+}
+summary{padding:10px;font-weight:600;cursor:pointer}
+.menu-item{
+  padding:8px 12px;border-top:1px solid #eee;
+  cursor:pointer
+}
+.menu-item:hover{background:#f1f1f1}
+.price{float:right;color:#2e7d32;font-weight:600}
+.cart{
+  margin-top:16px;background:#fff3e0;
+  padding:14px;border-radius:14px
+}
+.cart-item{
+  display:flex;justify-content:space-between;
+  font-size:14px;margin-bottom:6px
+}
+.remove{color:#d32f2f;cursor:pointer;font-weight:bold}
+.total{margin-top:10px;font-weight:700;color:#d84315}
+.pay-btn{
+  width:100%;padding:10px;margin-top:8px;
+  border-radius:8px;border:none;
+  cursor:pointer;font-weight:600;
+  color:white;opacity:.8
+}
+.pay-btn.selected{outline:3px solid #000;opacity:1}
+.card-pay{background:#1976d2}
+.cash-pay{background:#388e3c}
+.online-pay{background:#7b1fa2}
+.confirm-btn{
+  width:100%;padding:12px;margin-top:16px;
+  border-radius:10px;border:none;
+  font-weight:600;cursor:pointer;
+  background:#ccc;color:#666
+}
+.confirm-btn.enabled{
+  background:linear-gradient(135deg,#ff7043,#d84315);
+  color:white
+}
+#msg{text-align:center;margin-top:10px;font-weight:600}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>🍽️ Culinary Canvas</h1>
+<div class="subtitle">Where flavours come alive</div>
+
+<label>Customer Name</label>
+<input id="name" placeholder="Enter your name">
+
+<label>Menu</label>
+
+<!-- FOOD -->
+<details>
+<summary>🍕 Food Items</summary>
+<div class="menu-item" onclick="addItem('Margherita Pizza',9)">Margherita Pizza <span class="price">€9</span></div>
+<div class="menu-item" onclick="addItem('Veg Pasta Alfredo',10)">Veg Pasta Alfredo <span class="price">€10</span></div>
+<div class="menu-item" onclick="addItem('Cheese Burger',10)">Cheese Burger <span class="price">€10</span></div>
+<div class="menu-item" onclick="addItem('Grilled Chicken',12)">Grilled Chicken <span class="price">€12</span></div>
+<div class="menu-item" onclick="addItem('Paneer Tikka',11)">Paneer Tikka <span class="price">€11</span></div>
+<div class="menu-item" onclick="addItem('Chicken Biryani',13)">Chicken Biryani <span class="price">€13</span></div>
+<div class="menu-item" onclick="addItem('Veg Fried Rice',9)">Veg Fried Rice <span class="price">€9</span></div>
+</details>
+
+<!-- DRINKS -->
+<details>
+<summary>🥤 Cold Drinks</summary>
+<div class="menu-item" onclick="addItem('Coca Cola',3)">Coca Cola <span class="price">€3</span></div>
+<div class="menu-item" onclick="addItem('Pepsi',3)">Pepsi <span class="price">€3</span></div>
+<div class="menu-item" onclick="addItem('Orange Juice',4)">Orange Juice <span class="price">€4</span></div>
+<div class="menu-item" onclick="addItem('Apple Juice',4)">Apple Juice <span class="price">€4</span></div>
+<div class="menu-item" onclick="addItem('Iced Tea',3.5)">Iced Tea <span class="price">€3.5</span></div>
+<div class="menu-item" onclick="addItem('Cold Coffee',4.5)">Cold Coffee <span class="price">€4.5</span></div>
+<div class="menu-item" onclick="addItem('Lemonade',3)">Lemonade <span class="price">€3</span></div>
+<div class="menu-item" onclick="addItem('Sparkling Water',2.5)">Sparkling Water <span class="price">€2.5</span></div>
+</details>
+
+<!-- CART -->
+<div class="cart">
+<b>🛒 Your Cart</b>
+<div id="cartItems"></div>
+<div class="total">Total: €<span id="total">0.00</span></div>
+</div>
+
+<label>Special Requests</label>
+<textarea id="notes"></textarea>
+
+<!-- PAYMENT -->
+<details>
+<summary>💳 Choose Payment Method</summary>
+<button class="pay-btn card-pay" onclick="selectPayment('Card',this)">Pay by Card</button>
+<button class="pay-btn cash-pay" onclick="selectPayment('Cash',this)">Pay by Cash</button>
+<button class="pay-btn online-pay" onclick="selectPayment('Online',this)">Pay Online</button>
+</details>
+
+<button id="confirmBtn" class="confirm-btn" onclick="submitOrder()">Confirm Order</button>
+<div id="msg"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyDMpNVB_8HEhQ3GKhYHHh3g601ybsRe-Ow",
+  authDomain:"liveboard-e39b5.firebaseapp.com",
+  projectId:"liveboard-e39b5"
+});
+
+const db = firebase.firestore();
+let cart = [], total = 0, paymentMethod = "";
+
+function addItem(name, price){
+  cart.push({name, price});
+  total += price;
+  renderCart();
+}
+
+function removeItem(i){
+  total -= cart[i].price;
+  cart.splice(i,1);
+  renderCart();
+}
+
+function renderCart(){
+  document.getElementById("cartItems").innerHTML =
+    cart.map((i,x)=>`${i.name} - €${i.price} <span class="remove" onclick="removeItem(${x})">✖</span>`).join("<br>");
+  document.getElementById("total").innerText = total.toFixed(2);
+}
+
+function selectPayment(method, btn){
+  paymentMethod = method;
+  document.querySelectorAll(".pay-btn").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  document.getElementById("confirmBtn").classList.add("enabled");
+  document.getElementById("msg").innerText = `Payment selected: ${method}`;
+}
+
+function submitOrder(){
+  const customerName = document.getElementById("name").value;
+  const notes = document.getElementById("notes").value;
+  const msg = document.getElementById("msg");
+
+  if(!customerName || cart.length === 0 || !paymentMethod){
+    msg.innerText = "Please complete all steps before confirming.";
+    msg.style.color = "red";
+    return;
+  }
+
+  db.collection("orders").add({
+    name: customerName,
+    items: cart,
+    total: total,
+    payment: paymentMethod,
+    notes: notes,
+    status: "New",
+    createdAt: new Date()
+  }).then(()=>{
+    msg.innerText = "✅ Order confirmed successfully!";
+    msg.style.color = "green";
+    cart = [];
+    total = 0;
+    paymentMethod = "";
+    renderCart();
+    document.getElementById("confirmBtn").classList.remove("enabled");
+    document.querySelectorAll(".pay-btn").forEach(b=>b.classList.remove("selected"));
+    document.getElementById("name").value = "";
+    document.getElementById("notes").value = "";
+  });
+}
+</script>
+
+</body>
+</html>
